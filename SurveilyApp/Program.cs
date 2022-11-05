@@ -13,8 +13,8 @@ namespace SurveilyApp
             var sw = Stopwatch.StartNew();
             foreach (var url in urls)
             {
-                var jsonDownlander = new JsonDownloader(url);
-                jsonDownlander.DownloadJson();
+                var jsonDownloader = new JsonDownloader(url);
+                jsonDownloader.DownloadJson();
             }
 
             sw.Stop();
