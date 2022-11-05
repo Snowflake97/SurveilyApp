@@ -22,6 +22,7 @@ namespace SurveilyApp
 
         public void SaveToFile(string formatedJson)
         {
+            // TODO user input directory not done
             var filePath = System.IO.Path.Combine(_jsonResultsDirectory, FileName + _jsonExtension);
             System.IO.File.WriteAllText(filePath, formatedJson);
         }

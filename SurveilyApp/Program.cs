@@ -1,37 +1,77 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace SurveilyApp
 {
-    class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        private static void IterVersion(List<string> urls)
+        {
+            Console.WriteLine("\n\nIter version:");
+            var sw = Stopwatch.StartNew();
+            foreach (var url in urls)
+            {
+                var jsonDownlander = new JsonDownloader(url);
+                jsonDownlander.DownloadJson();
+            }
+
+            sw.Stop();
+            Console.WriteLine("Iter version done - Time taken: {0}ms", sw.Elapsed.TotalMilliseconds);
+        }
+
+        private static async Task TaskVersion(List<string> urls)
+        {
+            Console.WriteLine("Task version:");
+            var sw = Stopwatch.StartNew();
+            var tasks = new List<Task>();
+            foreach (var url in urls)
+            {
+                tasks.Add(Task.Run(() => new JsonDownloader(url).DownloadJson()));
+            }
+
+            await Task.WhenAll(tasks);
+            sw.Stop();
+            Console.WriteLine("Task version done - Time taken: {0}ms", sw.Elapsed.TotalMilliseconds);
+        }
+
+        private static async Task Main(string[] args)
         {
             // stdin TODO
 
-            var url1 = "https://pokeapi.co/api/v2/pokemon/ditto";
-            var url2 = "https://pokeapi.co/api/v2/pokemon-species/aegislash";
-            var url3 = "https://pokeapi.co/api/v2/type/3";
-            var url4 = "https://pokeapi.co/api/v2/pokemon/pikachu";
-
-            var test_url = url1 + ";" + url2 + ";" + url3 + ";" + url4;
+            var urlList = new List<string>
+            {
+                "https://pokeapi.co/api/v2/pokemon/ditto",
+                "https://pokeapi.co/api/v2/pokemon-species/aegislash",
+                // "https://pokeapi.co/api/v2/type/3", //doubled json name
+                "pokeapi.co/api/v2/pokemon/pikachu",
+                "https://pokeapi.co/api/v2/pokemon/1",
+                "https://pokeapi.co/api/v2/pokemon/2",
+                "https://pokeapi.co/api/v2/pokemon/3",
+                "https://pokeapi.co/api/v2/pokemon/4",
+                "https://pokeapi.co/api/v2/pokemon/5",
+                "https://pokeapi.co/api/v2/pokemon/6",
+                "https://pokeapi.co/api/v2/pokemon/7",
+                "https://pokeapi.co/api/v2/pokemon/8",
+                "https://pokeapi.co/api/v2/pokemon/9",
+                "https://pokeapi.co/api/v2/pokemon/10",
+                "https://pokeapi.co/api/v2/pokemon/11",
+            };
+            // Simulated user input
+            var testUrl = string.Join(";", urlList);
 
             // Parse input
-            var urlParser = new UrlParser(test_url);
+            var urlParser = new UrlParser(testUrl);
 
             // Url list
-            List<string> urls = urlParser.ParseUrl();
+            var urls = urlParser.ParseUrl();
 
-            foreach (var url in urls)
-            {
-                // Create threads? - thread per url
-                var urlFetcher = new UrlFetcher(url);
-                var fileName = url.Split("/").Last();
-                var fomatedJson = urlFetcher.FetchJsonFromUrl();
-                var fileSaver = new FileSaver(fileName);
-                fileSaver.SaveToFile(fomatedJson);
-            }
+            // Do iter version
+            IterVersion(urls);
+
+            // Do task version
+            await TaskVersion(urls);
         }
     }
 }
