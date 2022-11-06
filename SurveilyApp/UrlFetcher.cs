@@ -8,35 +8,28 @@ namespace SurveilyApp
     public class UrlFetcher
     {
         public string Url { get; }
+        public bool IsUrlValid { get; set; }
 
         public UrlFetcher(string url)
         {
-            Url = url;
-        }
-
-        private static string FormatJson(string json)
-        {
-            dynamic parsedJson = JsonConvert.DeserializeObject(json);
-            return JsonConvert.SerializeObject(parsedJson, Newtonsoft.Json.Formatting.Indented);
+            Url = new UriBuilder(url).Uri.ToString();
         }
 
         public async Task<bool> IsUrlExists()
         {
             try
             {
-                using (HttpClient client = new HttpClient())
+                using var client = new HttpClient();
+                // Only head request
+                var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, Url));
+
+                if (response.IsSuccessStatusCode)
                 {
-                    // Only head request
-                    var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, Url));
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Url exists
-                        return true;
-                    }
-
-                    return false;
+                    // Url exists
+                    return true;
                 }
+
+                return false;
             }
             catch
             {
@@ -44,13 +37,32 @@ namespace SurveilyApp
             }
         }
 
-        public string FetchJsonFromUrl()
+        private static string TryFormatToJson(string fetchedContent)
         {
-            using (var webClient = new System.Net.WebClient())
+            try
             {
-                var json = webClient.DownloadString(Url);
-                return FormatJson(json);
+                var parsedJson = JsonConvert.DeserializeObject(fetchedContent);
+                return JsonConvert.SerializeObject(parsedJson, Newtonsoft.Json.Formatting.Indented);
             }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public string FetchContentFromUrl()
+        {
+            using var webClient = new System.Net.WebClient();
+            if (IsUrlExists().Result)
+            {
+                IsUrlValid = true;
+                var fetchedContent = webClient.DownloadString(Url);
+                var jsonContent = TryFormatToJson(fetchedContent);
+                return jsonContent;
+            }
+
+            IsUrlValid = false;
+            return null;
         }
     }
 }

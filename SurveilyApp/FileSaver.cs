@@ -12,7 +12,7 @@ namespace SurveilyApp
         private static readonly string _jsonResultsDirectory =
             System.IO.Path.Combine(_projectDirectory, "json_results");
 
-        private static readonly string _jsonExtension = ".json";
+        public static readonly string _jsonExtension = ".json";
         public string FileName { get; }
 
         public FileSaver(string fileName)

@@ -20,7 +20,8 @@ namespace SurveilyApp
 
         public List<string> ParseUrl()
         {
-            return Url.Split(';').ToList();
+            var urlWithoutWhitespaces = String.Concat(Url.Where(c => !Char.IsWhiteSpace(c)));
+            return urlWithoutWhitespaces.Split(';').ToList();
         }
     }
 }

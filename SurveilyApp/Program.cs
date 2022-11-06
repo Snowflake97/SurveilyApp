@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SurveilyApp
 {
-    public static class Program
+    public class Program
     {
         private static void IterVersion(List<string> urls)
         {
@@ -57,6 +57,9 @@ namespace SurveilyApp
                 "https://pokeapi.co/api/v2/pokemon/9",
                 "https://pokeapi.co/api/v2/pokemon/10",
                 "https://pokeapi.co/api/v2/pokemon/11",
+                "google.com",
+                "qwertyui",
+                "www.google.com"
             };
             // Simulated user input
             var testUrl = string.Join(";", urlList);

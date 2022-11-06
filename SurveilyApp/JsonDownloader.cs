@@ -20,16 +20,23 @@ namespace SurveilyApp
 
         public void DownloadJson()
         {
-            var isUrlValid = UrlFetcher.IsUrlExists().Result;
-            if (isUrlValid)
+            var fetchedContent = UrlFetcher.FetchContentFromUrl();
+            if (UrlFetcher.IsUrlValid)
             {
-                var fomatedJson = UrlFetcher.FetchJsonFromUrl();
-                FileSaver.SaveToFile(fomatedJson);
-                Console.WriteLine("Url " + Url + " is valid, results are saved in file " + FileName);
+                if (fetchedContent != null)
+                {
+                    FileSaver.SaveToFile(fetchedContent);
+                    Console.WriteLine("Url " + Url + " is valid, results are saved in file " + FileName +
+                                      FileSaver._jsonExtension);
+                }
+                else
+                {
+                    Console.WriteLine("Url " + Url + " is valid but not json response was retrieved - skipping");
+                }
             }
             else
             {
-                Console.WriteLine("Url " + Url + " is no valid url - skipping");
+                Console.WriteLine("Url " + Url + " is not valid url - skipping");
             }
         }
     }
