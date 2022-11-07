@@ -14,8 +14,16 @@ namespace SurveilyApp
         {
             Url = url;
             UrlFetcher = new UrlFetcher(url);
-            FileName = Url.Split("/").Last(); // TODO function, logic, empty names, existed names etc
+            FileName = CreateFileName();
             FileSaver = new FileSaver(FileName);
+        }
+
+        public string CreateFileName()
+        {
+            var splitedString = Url.Split(new char[] { ':', '.', '/' });
+            splitedString = splitedString.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            var fileName = string.Join("_", splitedString);
+            return fileName;
         }
 
         public void DownloadJson()

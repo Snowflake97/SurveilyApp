@@ -20,11 +20,17 @@ namespace SurveilyApp
             FileName = fileName;
         }
 
-        public void SaveToFile(string formatedJson)
+        public bool IsFileExists()
+        {
+            //TODO   
+            return false;
+        }
+
+        public void SaveToFile(string fileContent)
         {
             // TODO user input directory not done
             var filePath = System.IO.Path.Combine(_jsonResultsDirectory, FileName + _jsonExtension);
-            System.IO.File.WriteAllText(filePath, formatedJson);
+            System.IO.File.WriteAllText(filePath, fileContent);
         }
     }
 }

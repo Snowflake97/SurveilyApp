@@ -12,16 +12,21 @@ namespace SurveilyApp
 
         public UrlFetcher(string url)
         {
-            Url = new UriBuilder(url).Uri.ToString();
+            Url = url;
+        }
+
+        public UrlFetcher()
+        {
         }
 
         public async Task<bool> IsUrlExists()
         {
             try
             {
+                var tempUrl = new UriBuilder(Url).Uri.ToString();
                 using var client = new HttpClient();
                 // Only head request
-                var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, Url));
+                var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, tempUrl));
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -56,9 +61,16 @@ namespace SurveilyApp
             if (IsUrlExists().Result)
             {
                 IsUrlValid = true;
-                var fetchedContent = webClient.DownloadString(Url);
-                var jsonContent = TryFormatToJson(fetchedContent);
-                return jsonContent;
+                try
+                {
+                    var fetchedContent = webClient.DownloadString(Url);
+                    var jsonContent = TryFormatToJson(fetchedContent);
+                    return jsonContent;
+                }
+                catch
+                {
+                    return null;
+                }
             }
 
             IsUrlValid = false;
