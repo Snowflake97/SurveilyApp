@@ -18,7 +18,8 @@ namespace SurveilyTests
 
         public FileSaver_CreateFileNameTest(string testInput, string expectedResult)
         {
-            _fileSaver = new FileSaver(testInput, "null","null");
+            _fileSaver = new FileSaver();
+            _fileSaver.Url = testInput;
             _expectedResult = expectedResult;
         }
 

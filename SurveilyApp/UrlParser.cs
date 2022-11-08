@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.String;
 
 namespace SurveilyApp
 {
     public class UrlParser
     {
-        public string UserInput { get; set; }
-        public List<string> UrlList { get; set; }
-
-        public UrlParser()
-        {
-        }
+        private string UserInput { get; set; }
+        private List<string> UrlList { get; set; }
 
         public UrlParser(string userInput)
         {
@@ -35,7 +32,7 @@ namespace SurveilyApp
 
         private void TrimWhiteSpaces()
         {
-            UserInput = String.Concat(UserInput.Where(c => !Char.IsWhiteSpace(c)));
+            UserInput = Concat(UserInput.Where(c => !char.IsWhiteSpace(c)));
         }
 
         private void CreateUrlList()
@@ -50,20 +47,12 @@ namespace SurveilyApp
 
         private void BuildUriList()
         {
-            var temporaryUrlList = new List<string>();
-            foreach (var url in UrlList)
-            {
-                var uri = BuildUri(url);
-                if (uri != null)
-                {
-                    temporaryUrlList.Add(uri);
-                }
-            }
+            var temporaryUrlList = UrlList.Select(BuildUri).Where(uri => uri != null).ToList();
 
             UrlList = temporaryUrlList;
         }
 
-        public string BuildUri(string url)
+        public static string BuildUri(string url)
         {
             try
             {

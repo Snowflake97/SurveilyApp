@@ -6,15 +6,11 @@ namespace SurveilyApp
 {
     public class UrlFetcher
     {
-        public string Url { get; }
+        private string Url { get; }
 
         public UrlFetcher(string url)
         {
             Url = url;
-        }
-
-        public UrlFetcher()
-        {
         }
 
         public async Task<bool> IsUrlExists()

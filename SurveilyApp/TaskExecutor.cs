@@ -6,11 +6,11 @@ namespace SurveilyApp
 {
     public class TaskExecutor
     {
-        public List<string> UrlList { get; }
-        public List<Task> TaskList { get; }
+        private List<string> UrlList { get; }
+        private List<Task> TaskList { get; }
 
-        public string DirectoryPath { get; }
-        public string UserUrlsInput { get; }
+        private string DirectoryPath { get; }
+        private string UserUrlsInput { get; }
 
         public TaskExecutor()
         {
@@ -18,12 +18,12 @@ namespace SurveilyApp
             UserUrlsInput = inputHandler.GetUserInput("Please enter urls (; is the delimiter)");
             DirectoryPath =
                 inputHandler.GetUserInput(
-                    "Please enter path to directory where results should be stored (absolute path)");
+                    "Please enter path to directory where results should be stored");
             TaskList = new List<Task>();
             UrlList = new UrlParser(UserUrlsInput).ParseUrl();
         }
 
-        public void PerformUrlJsonDownloadAndSave(string url)
+        private void PerformUrlJsonDownloadAndSave(string url)
         {
             var jsonContent = new JsonDownloader(url).DownloadJson();
             if (jsonContent != null)
@@ -39,12 +39,19 @@ namespace SurveilyApp
 
         public async Task DownloadContentFromAllUrls()
         {
-            foreach (var url in UrlList)
+            if (UrlList.Count > 0)
             {
-                TaskList.Add(Task.Run(() => PerformUrlJsonDownloadAndSave(url)));
-            }
+                foreach (var url in UrlList)
+                {
+                    TaskList.Add(Task.Run(() => PerformUrlJsonDownloadAndSave(url)));
+                }
 
-            await Task.WhenAll(TaskList);
+                await Task.WhenAll(TaskList);
+            }
+            else
+            {
+                Console.WriteLine("Nothing to do");
+            }
         }
     }
 }

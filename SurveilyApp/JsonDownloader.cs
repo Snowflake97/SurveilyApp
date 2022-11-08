@@ -4,13 +4,11 @@ namespace SurveilyApp
 {
     public class JsonDownloader
     {
-        public string Url { get; }
-        public UrlFetcher UrlFetcher;
+        private readonly UrlFetcher _urlFetcher;
 
         public JsonDownloader(string url)
         {
-            Url = url;
-            UrlFetcher = new UrlFetcher(url);
+            _urlFetcher = new UrlFetcher(url);
         }
 
         private static string TryFormatToJson(string fetchedContent)
@@ -28,9 +26,9 @@ namespace SurveilyApp
 
         public string DownloadJson()
         {
-            if (UrlFetcher.IsUrlExists().Result)
+            if (_urlFetcher.IsUrlExists().Result)
             {
-                var fetchedContent = UrlFetcher.FetchContentFromUrl();
+                var fetchedContent = _urlFetcher.FetchContentFromUrl();
                 var jsonContent = TryFormatToJson(fetchedContent);
                 return jsonContent;
             }

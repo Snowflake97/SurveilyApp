@@ -4,7 +4,7 @@ namespace SurveilyApp
 {
     public class Program
     {
-        private static async Task Main(string[] args)
+        private static async Task Main()
         {
             await new TaskExecutor().DownloadContentFromAllUrls();
         }

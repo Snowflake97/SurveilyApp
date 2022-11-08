@@ -5,11 +5,7 @@ namespace SurveilyApp
 {
     public class InputHandler
     {
-        public string Input { get; set; }
-
-        public InputHandler()
-        {
-        }
+        private string Input { get; set; }
 
         public string GetUserInput(string dialogMessage)
         {
