@@ -6,7 +6,7 @@ namespace SurveilyApp
     {
         private static async Task Main(string[] args)
         {
-            await new TaskExecutor().PerformTaskJsonDownloader();
+            await new TaskExecutor().DownloadContentFromAllUrls();
         }
     }
 }

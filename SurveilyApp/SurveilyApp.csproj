@@ -11,6 +11,7 @@
 
     <ItemGroup>
       <Folder Include="json_results" />
+      <Folder Include="results" />
     </ItemGroup>
 
 </Project>

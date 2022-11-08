@@ -1,36 +1,80 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 
 namespace SurveilyApp
 {
     public class FileSaver
     {
-        private static readonly string _projectDirectory = System.IO.Directory
-            .GetParent(System.IO.Directory
-                .GetParent(System.IO.Directory.GetParent(Environment.CurrentDirectory).ToString()).ToString())
-            .ToString();
-
-        private static readonly string _jsonResultsDirectory =
-            System.IO.Path.Combine(_projectDirectory, "json_results");
-
         public static readonly string _jsonExtension = ".json";
+        public string Url { get; }
         public string FileName { get; }
+        public string AbsoluteDirectoryPath { get; }
+        public string AbsolutePathToFile { get; }
+        public string FileContent { get; }
 
-        public FileSaver(string fileName)
+        public FileSaver(string url, string absoluteDirectoryPath, string fileContent)
         {
-            FileName = fileName;
+            Url = url;
+            FileContent = fileContent;
+            FileName = CreateFileName();
+            AbsoluteDirectoryPath = absoluteDirectoryPath;
+            CreateDirectory(AbsoluteDirectoryPath);
+            AbsolutePathToFile = Path.Combine(AbsoluteDirectoryPath, FileName + _jsonExtension);
+        }
+
+        public string CreateFileName()
+        {
+            var splittedString = Url.Split(new char[] { ':', '.', '/' });
+            splittedString = splittedString.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            var fileName = string.Join("_", splittedString);
+            return fileName;
         }
 
         public bool IsFileExists()
         {
-            //TODO   
+            if (File.Exists(AbsolutePathToFile))
+            {
+                return true;
+            }
+
             return false;
         }
 
-        public void SaveToFile(string fileContent)
+        public bool IsDirectryExits()
         {
-            // TODO user input directory not done
-            var filePath = System.IO.Path.Combine(_jsonResultsDirectory, FileName + _jsonExtension);
-            System.IO.File.WriteAllText(filePath, fileContent);
+            if (Directory.Exists(AbsoluteDirectoryPath))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+
+        public static void CreateDirectory(string path)
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        public void SaveToFile()
+        {
+            if (IsDirectryExits())
+            {
+                if (IsFileExists() == false)
+                {
+                    File.WriteAllText(AbsolutePathToFile, FileContent);
+                    Console.WriteLine("[" + Url + "] - json content saved under " + FileName);
+                }
+                else
+                {
+                    Console.WriteLine("[" + Url + "] - " + FileName + " already exists - skipping");
+                }
+            }
+            else
+            {
+                Console.WriteLine("[" + Url + "] - Provided directory is invalid, files won't be saved - skipping");
+            }
         }
     }
 }

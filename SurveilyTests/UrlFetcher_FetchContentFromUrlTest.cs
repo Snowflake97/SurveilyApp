@@ -5,8 +5,8 @@ namespace SurveilyTests
 {
     [TestFixture("https://pokeapi.co/api/v2/pokemon/1", true)]
     [TestFixture("https://pokeapi.co/api/v2/pokemon/2/", true)]
-    [TestFixture("https://www.google.com", false)]
-    [TestFixture("http://www.google.com", false)]
+    [TestFixture("https://www.google.com", true)]
+    [TestFixture("http://www.google.com", true)]
     [TestFixture("www.google.com", false)]
     [TestFixture("google.com", false)]
     [TestFixture("somerandomstring", false)]
@@ -25,14 +25,14 @@ namespace SurveilyTests
         [Test]
         public void FetchContentFromUrlTest()
         {
-            var jsonContent = _urlFetcher.FetchContentFromUrl();
+            var urlContent = _urlFetcher.FetchContentFromUrl();
             if (_expectedResult)
             {
-                Assert.That(string.IsNullOrEmpty(jsonContent), Is.False, "Result string must not be null");
+                Assert.That(string.IsNullOrEmpty(urlContent), Is.False, "Result string must not be null");
             }
             else
             {
-                Assert.That(string.IsNullOrEmpty(jsonContent), Is.True, "Result string must be null");
+                Assert.That(string.IsNullOrEmpty(urlContent), Is.True, "Result string must be null");
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace SurveilyApp
 {
@@ -10,9 +11,16 @@ namespace SurveilyApp
         {
         }
 
-        public void GetUserInput()
+        public string GetUserInput(string dialogMessage)
         {
-            Input = Console.ReadLine();
+            Console.WriteLine(dialogMessage + ": ");
+            Input = TrimInput(Console.ReadLine());
+            return Input;
+        }
+
+        public string TrimInput(string userInput)
+        {
+            return String.Concat(userInput.Where(c => !Char.IsWhiteSpace(c)));
         }
     }
 }

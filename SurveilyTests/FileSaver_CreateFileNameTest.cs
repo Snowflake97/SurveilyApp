@@ -11,21 +11,21 @@ namespace SurveilyTests
     [TestFixture("www.google.com", "www_google_com")]
     [TestFixture("google.com", "google_com")]
     [TestFixture("somerandomstring", "somerandomstring")]
-    public class JsonDownloader_CreateFileNameTest
+    public class FileSaver_CreateFileNameTest
     {
-        private readonly JsonDownloader _jsonDownloader;
+        private readonly FileSaver _fileSaver;
         private readonly string _expectedResult;
 
-        public JsonDownloader_CreateFileNameTest(string testInput, string expectedResult)
+        public FileSaver_CreateFileNameTest(string testInput, string expectedResult)
         {
-            _jsonDownloader = new JsonDownloader(testInput);
+            _fileSaver = new FileSaver(testInput, "null","null");
             _expectedResult = expectedResult;
         }
 
         [Test]
         public void CreateFileNameTest()
         {
-            var methodResult = _jsonDownloader.CreateFileName();
+            var methodResult = _fileSaver.CreateFileName();
             Assert.AreEqual(_expectedResult, methodResult);
         }
     }

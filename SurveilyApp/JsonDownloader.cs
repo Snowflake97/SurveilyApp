@@ -1,51 +1,41 @@
-﻿using System;
-using System.Linq;
+﻿using Newtonsoft.Json;
 
 namespace SurveilyApp
 {
     public class JsonDownloader
     {
         public string Url { get; }
-        public string FileName { get; }
         public UrlFetcher UrlFetcher;
-        public FileSaver FileSaver;
 
         public JsonDownloader(string url)
         {
             Url = url;
             UrlFetcher = new UrlFetcher(url);
-            FileName = CreateFileName();
-            FileSaver = new FileSaver(FileName);
         }
 
-        public string CreateFileName()
+        private static string TryFormatToJson(string fetchedContent)
         {
-            var splitedString = Url.Split(new char[] { ':', '.', '/' });
-            splitedString = splitedString.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            var fileName = string.Join("_", splitedString);
-            return fileName;
+            try
+            {
+                var parsedJson = JsonConvert.DeserializeObject(fetchedContent);
+                return JsonConvert.SerializeObject(parsedJson, Newtonsoft.Json.Formatting.Indented);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public void DownloadJson()
+        public string DownloadJson()
         {
-            var fetchedContent = UrlFetcher.FetchContentFromUrl();
-            if (UrlFetcher.IsUrlValid)
+            if (UrlFetcher.IsUrlExists().Result)
             {
-                if (fetchedContent != null)
-                {
-                    FileSaver.SaveToFile(fetchedContent);
-                    Console.WriteLine("Url " + Url + " is valid, results are saved in file " + FileName +
-                                      FileSaver._jsonExtension);
-                }
-                else
-                {
-                    Console.WriteLine("Url " + Url + " is valid but not json response was retrieved - skipping");
-                }
+                var fetchedContent = UrlFetcher.FetchContentFromUrl();
+                var jsonContent = TryFormatToJson(fetchedContent);
+                return jsonContent;
             }
-            else
-            {
-                Console.WriteLine("Url " + Url + " is not valid url - skipping");
-            }
+
+            return null;
         }
     }
 }
